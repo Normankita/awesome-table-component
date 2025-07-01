@@ -1,6 +1,4 @@
 import { useState, useRef, useMemo } from 'react';
-import Skeleton from 'react-loading-skeleton';
-import 'react-loading-skeleton/dist/skeleton.css';
 import './TableComponent.css';
 
 /**
@@ -14,7 +12,7 @@ import './TableComponent.css';
  * @param {Object} transformFields - An object with functions to transform the data in each field.
  * @param {Object} headerLabels - An object with the labels for each header.
  * @param {Function} customActions - A function that returns the custom action buttons for each row.
-*/
+ */
 const TableComponent = ({
   ItemData = [],
   headers = [],
@@ -30,8 +28,6 @@ const TableComponent = ({
   const [searchTerm, setSearchTerm] = useState("");
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
   const norow = useRef();
-
-  const count = 0;
 
   const visibleHeaders = useMemo(() => {
     return headers.filter(
@@ -108,51 +104,50 @@ const TableComponent = ({
   };
 
   return (
-    <div className="bg-slate-50 hover:bg-slate-100 dark:bg-slate-900 dark:hover:bg-slate-950 p-6 rounded-sm dark:text-gray-300 text-gray-800 duration-300 shadow-lg shadow-slate-900/10 dark:shadow-black/40 border">
-      <div className="flex justify-center items-center mb-4 ">
-        <h1 className="text-2xl font-bold text-gray-600 dark:text-gray-400">{title} Table</h1>
+    <div className="table-container">
+      <div className="flex justify-center items-center mb-4">
+        <h1 className="table-title">{title} Table</h1>
       </div>
 
       <div className="flex justify-center mb-4">
         <input
           type="text"
-          className="border px-4 py-2 rounded w-full max-w-sm dark:bg-gray-700 dark:text-white duration-300 shadow-lg shadow-slate-900/10 dark:shadow-black/40"
+          className="search-input"
           placeholder="Search..."
           value={searchTerm}
           onChange={handleSearchChange}
         />
       </div>
 
-      <form className="flex justify-center items-center mb-5 ">
-        <div className="relative flex items-center max-w-[8rem] duration-300 shadow-lg shadow-slate-900/10 dark:shadow-black/40">
-          <button onClick={(e) => { e.preventDefault(); handleNumber("minus"); }} className="bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-900 shadow-lg shadow-slate-900/10 dark:shadow-black/40 border border-gray-300 rounded-s-lg p-3 h-11">
-            <span className="text-black dark:text-white">−</span>
+      <form className="entries-selector">
+        <div className="relative flex items-center">
+          <button onClick={(e) => { e.preventDefault(); handleNumber("minus"); }} className="entries-button">
+            <span>−</span>
           </button>
-          <input ref={norow} onChange={handleEntriesChange} type="text" className="bg-gray-50 border-x-0 border-gray-300 h-11 text-center text-sm text-gray-900 block w-full dark:bg-gray-700 dark:text-white" defaultValue={entriesPerPage} />
-          <button onClick={(e) => { e.preventDefault(); handleNumber("add"); }} className="bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-900 shadow-lg shadow-slate-900/10 dark:shadow-black/40 border border-gray-300 rounded-e-lg p-3 h-11">
-            <span className="text-black dark:text-white">+</span>
+          <input ref={norow} onChange={handleEntriesChange} type="text" className="entries-input" defaultValue={entriesPerPage} />
+          <button onClick={(e) => { e.preventDefault(); handleNumber("add"); }} className="entries-button">
+            <span>+</span>
           </button>
         </div>
       </form>
 
       <div className="overflow-x-auto">
-        <table className="w-full table-auto">
+        <table className="table">
           <thead>
-            <tr className="bg-gray-200 dark:bg-gray-700 text-left ">
-              <th className='cursor-pointer select-none py-4 px-4 font-medium text-black dark:text-white'>#</th>
+            <tr className="table-header">
+              <th className="cursor-pointer select-none">#</th>
               {visibleHeaders.map(heading => (
                 <th
                   key={heading}
                   onClick={() => handleSort(heading)}
-                  className="cursor-pointer select-none min-w-[110px] py-4 px-4 text-black dark:text-white font-bold uppercase text-sm "
+                  className="cursor-pointer select-none"
                 >
-                  <span className='flex flex-col items-center'>
+                  <span>
                     {headerLabels[heading] || heading} <span>{getSortIcon(heading)}</span>
                   </span>
-
                 </th>
               ))}
-              <th className="py-4 px-4 text-black dark:text-white flex flex-col items-center font-bold uppercase">Actions</th>
+              <th className="actions">Actions</th>
             </tr>
           </thead>
 
@@ -160,23 +155,26 @@ const TableComponent = ({
             {isLoading ? (
               [...Array(entriesPerPage)].map((_, index) => (
                 <tr key={index}>
+                  <td className="table-cell">
+                    <div className="skeleton"></div>
+                  </td>
                   {visibleHeaders.map(header => (
-                    <td key={header} className="border-b py-4 px-4 dark:border-strokedark ">
-                      <Skeleton height={20} />
+                    <td key={header} className="table-cell">
+                      <div className="skeleton"></div>
                     </td>
                   ))}
-                  <td className="border-b py-4 px-4 dark:border-strokedark">
-                    <Skeleton width={80} height={20} />
+                  <td className="table-cell">
+                    <div className="skeleton skeleton-actions"></div>
                   </td>
                 </tr>
               ))
             ) : (
               paginatedData.map((item, key) => (
                 <tr key={key}>
-                  <td className='border-b py-5 px-4 dark:border-strokedark'>{key + 1}</td>
+                  <td className="table-cell">{key + 1}</td>
                   {visibleHeaders.map(field => (
-                    <td key={field} className="truncate border-b py-5 px-4 max-w-xs dark:border-strokedark">
-                      <h5 className="font-medium text-black dark:text-white">
+                    <td key={field} className="table-cell truncate">
+                      <h5>
                         {
                           transformFields[field]
                             ? transformFields[field](item[field], item)
@@ -185,8 +183,8 @@ const TableComponent = ({
                       </h5>
                     </td>
                   ))}
-                  <td className="border-b py-1 px-4 dark:border-strokedark">
-                    <div className="flex flex-row items-center ">
+                  <td className="table-cell">
+                    <div className="flex flex-row items-center">
                       {customActions(item)}
                     </div>
                   </td>
@@ -197,14 +195,14 @@ const TableComponent = ({
         </table>
       </div>
 
-      <div className="flex justify-between items-center mt-4">
+      <div className="pagination-container">
         <button
           onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
           disabled={currentPage === 1}
-          className={`flex flex-row gap-2 items-center text-slate-900 bg-white border border-yellow-300 focus:outline-none hover:bg-slate-100 focus:ring-4 focus:ring-yellow-100 font-medium rounded-full text-sm px-5 py-2.5 me-2 mb-2 dark:bg-slate-900 dark:text-white dark:border-yellow-600 dark:hover:bg-slate-950 dark:hover:border-slate-600 dark:focus:ring-yellow-700 shadow-lg shadow-slate-900/10 dark:shadow-black/40 duration-300  ${currentPage === 1 ? 'bg-gray-300 dark:bg-gray-500 cursor-not-allowed' : 'bg-yellow-500 '} `}
+          className="pagination-button"
         >
-          <svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 12h14M5 12l4-4m-4 4 4 4" />
+          <svg className="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 12h14M5 12l4-4m-4 4l4 4" />
           </svg>
           Previous
         </button>
@@ -212,14 +210,12 @@ const TableComponent = ({
         <button
           onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
           disabled={currentPage === totalPages}
-          className={`flex flex-row gap-2 items-center text-slate-900 bg-white border border-yellow-300 focus:outline-none hover:bg-slate-100 focus:ring-4 focus:ring-yellow-100 font-medium rounded-full text-sm px-5 py-2.5 me-2 mb-2 dark:bg-slate-900 dark:text-white dark:border-yellow-600 dark:hover:bg-slate-950 dark:hover:border-slate-600 dark:focus:ring-yellow-700 shadow-lg shadow-slate-900/10 dark:shadow-black/40 duration-300  ${currentPage === totalPages ? 'bg-gray-300 dark:bg-gray-500 cursor-not-allowed' : 'bg-yellow-500'}`}
+          className="pagination-button"
         >
-
           Next
-          <svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+          <svg className="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
             <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 12H5m14 0-4 4m4-4-4-4" />
           </svg>
-
         </button>
       </div>
     </div>
