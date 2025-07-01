@@ -1,6 +1,6 @@
 {
   "name": "awesome-table-component",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": false,
   "type": "module",
   "main": "src/index.js",
@@ -17,7 +17,15 @@
     "LICENSE"
   ],
   "description": "A feature-rich, Tailwind-powered React table component with sorting, pagination, and search.",
-  "keywords": ["react", "table", "tailwind", "pagination", "sortable", "component", "datatable"],
+  "keywords": [
+    "react",
+    "table",
+    "tailwind",
+    "pagination",
+    "sortable",
+    "component",
+    "datatable"
+  ],
   "author": "Norman Leonard Kita",
   "license": "MIT",
   "repository": {
