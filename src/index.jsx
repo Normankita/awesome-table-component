@@ -1,4 +1,2 @@
-import TableComponent from './TableComponent.jsx';
-
-export { TableComponent };
+import TableComponent from './TableComponent';
 export default TableComponent;
