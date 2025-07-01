@@ -1,6 +1,7 @@
 import { useState, useRef, useMemo } from 'react';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
+import './TableComponent.css';
 
 /**
  * A table component with sorting and pagination.
